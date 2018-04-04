@@ -8,34 +8,30 @@ struct type *create_tree(struct type *params, int nb_params);
 struct type *copy_type(struct type tbc);
 void copy_range(struct range tbc, struct range *copy);
 
-/*
 int main(){
-  struct type* my_empty = create_type(empty, NULL, NULL, NULL, NULL, 0);
-  struct range my_range;
-  my_range.min = 0;
-  my_range.max = 10;
+  struct type* my_empty = create_empty();
 
   // --------------
   // Creation Tests
   // --------------
-  struct type* my_int = create_type(integer, NULL, NULL, NULL, NULL, 0);
+  struct type* my_int = create_integer();
   print_type(*my_int);
   printf("\n");
 
-  struct type* my_ptr_int = create_type(pointer, NULL, my_int, NULL, NULL, 0);
+  struct type* my_ptr_int = create_pointer(my_int);
   print_type(*my_ptr_int);
   printf("\n");
-  struct type* my_ptr_ptr_int = create_type(pointer, NULL, my_ptr_int, NULL, NULL, 0);
+  struct type* my_ptr_ptr_int = create_pointer(my_ptr_int);
   print_type(*my_ptr_ptr_int);
   printf("\n");
 
-  struct type* array_int = create_type(array, &my_range, my_int, NULL, NULL, 0);
+  struct type* array_int = create_array(my_int, 0, 10);
   print_type(*array_int);
   printf("\n");
-  struct type* array_array_int = create_type(array, &my_range, array_int, NULL, NULL, 0);
+  struct type* array_array_int = create_array(array_int, 0, 5);
   print_type(*array_array_int);
   printf("\n");
-  struct type* array_ptr_int = create_type(array, &my_range, my_ptr_int, NULL, NULL, 0);
+  struct type* array_ptr_int = create_array(my_ptr_int, 0, 3);
   print_type(*array_ptr_int);
   printf("\n");
 
@@ -47,35 +43,35 @@ int main(){
   parameters[3] = *my_int;
   parameters[4] = *my_int;
 
-  func = create_type(function, NULL, NULL, my_empty, NULL, 0);
+  func = create_function(my_empty, NULL, 0);
   print_type(*func);
   printf("\n");
   destroy_type(func);
-  func = create_type(function, NULL, NULL, my_int, parameters, 1);
+  func = create_function(my_int, parameters, 1);
   print_type(*func);
   printf("\n");
   destroy_type(func);
-  func = create_type(function, NULL, NULL, my_int, parameters, 2);
+  func = create_function(my_int, parameters, 2);
   print_type(*func);
   printf("\n");
   destroy_type(func);
-  func = create_type(function, NULL, NULL, my_int, parameters, 3);
+  func = create_function(my_int, parameters, 3);
   print_type(*func);
   printf("\n");
   destroy_type(func);
-  func = create_type(function, NULL, NULL, my_int, parameters, 4);
+  func = create_function(my_int, parameters, 4);
   print_type(*func);
   printf("\n");
   destroy_type(func);
-  func = create_type(function, NULL, NULL, my_int, parameters, 5);
+  func = create_function(my_int, parameters, 5);
   print_type(*func);
   printf("\n");
 
   // ----------------
   // Comparison Tests
   // ----------------
-  struct type *func2 = create_type(function, NULL, NULL, my_empty, NULL, 0);
-  struct type *func3 = create_type(function, NULL, NULL, my_int, parameters, 4);
+  struct type *func2 = create_function(my_empty, NULL, 0);
+  struct type *func3 = create_function(my_int, parameters, 4);
   assert(compare_type(*my_int, *my_int));
   assert(compare_type(*my_ptr_int, *my_ptr_int));
   assert(!compare_type(*my_int, *my_ptr_int));
@@ -111,7 +107,32 @@ int main(){
 
   return 0;
 }
-*/
+
+
+struct type* create_empty(){
+  return create_type(empty, NULL, NULL, NULL, NULL, 0);
+}
+struct type* create_integer(){
+  return create_type(integer, NULL, NULL, NULL, NULL, 0);
+}
+struct type* create_boolean(){
+  return create_type(boolean, NULL, NULL, NULL, NULL, 0);
+}
+struct type* create_character(){
+  return create_type(character, NULL, NULL, NULL, NULL, 0);
+}
+struct type* create_pointer(struct type* pointsto){
+  return create_type(pointer, NULL, pointsto, NULL, NULL, 0);
+}
+struct type* create_array(struct type *arrayof, int min, int max){
+  struct range my_range;
+  my_range.min = min;
+  my_range.max = max;
+  return create_type(array, &my_range, arrayof, NULL, NULL, 0);
+}
+struct type* create_function(struct type *returnf, struct type *params, int nb_params){
+  return create_type(function, NULL, NULL, returnf, params, nb_params);
+}
 
 struct type* create_type(enum Nature nat, struct range *my_range, struct type *left, struct type *right, struct type *params, int nb_params){
   assert(nb_params >= 0);
