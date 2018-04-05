@@ -2,18 +2,12 @@
 #define __memory_h__
 
 #include "types.h"
+#include "synt.h"
 
 enum env{
   Static,
   Stack,
   Heap
-};
-
-struct node{
-  struct type node_type;
-  int size;
-  int memoffset;
-  enum env memenv;
 };
 
 struct s_block{
